@@ -1,5 +1,5 @@
 import heapq  # Importing heapq for priority queue support.
-import math   
+import math    
 
 class Problem:
     # Initialize the problem with the initial state and an optional goal state.
