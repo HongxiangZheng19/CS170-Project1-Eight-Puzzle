@@ -1,11 +1,13 @@
 # [CS 170] Eight-Puzzle-Project
 Project 1: Solve the Eight Puzzle Problem
 
-* Problem: 
+Problem: 
+
 The Eight Puzzle consists of a 3x3 board with 8 numbered tiles and one blank space. The goal is to move the tiles around until they are in order, usually with the blank space in the bottom-right corner.
 
 
-* Approach: 
+Approach: 
+
 We will be using the A* with the Euclidean Distance heuristic method.
 
 1) A* algorithm is a search algorithm that is used to find the shortest path from a start node to a target node
