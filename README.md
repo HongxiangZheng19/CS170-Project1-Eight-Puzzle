@@ -1,5 +1,5 @@
-Eight-Puzzle-Project
-CS 170 Project 1: Solve the Eight Puzzle Problem
+# [CS 170] Eight-Puzzle-Project
+Project 1: Solve the Eight Puzzle Problem
 
 * Problem: 
 The Eight Puzzle consists of a 3x3 board with 8 numbered tiles and one blank space. The goal is to move the tiles around until they are in order, usually with the blank space in the bottom-right corner.
