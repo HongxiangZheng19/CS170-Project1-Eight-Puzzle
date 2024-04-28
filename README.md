@@ -1,4 +1,4 @@
-# CS170-Project1-Eight-Puzzle
+Eight-Puzzle-Project
 CS 170 Project 1: Solve the Eight Puzzle Problem
 
 * Problem: 
