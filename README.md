@@ -20,7 +20,7 @@ We will be using the A* with the Euclidean Distance heuristic method.
 
 - The heuristic function estimates the minimum cost from the current state to the goal state. 
 - The Euclidean Distance heuristic measures the straight-line distance between each tile’s current position and its goal position, summing these distances across all tiles. It's calculated as follows:
-    - h(n) = sqrt[(x2​−x1​)^2+(y2​−y1​)^2​)]
+    - h(n) = sqrt[(x2​−x1​)^2 + (y2​−y1​)^2​]
         - (x1, y1) is the current position of a tile, and (x2, y2) is the position in the goal state.
 
 3) Execution
