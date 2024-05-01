@@ -106,11 +106,8 @@ elif x == 2:
     elif algorithm_call == 2:
         print('calls A* misplaced')
     elif algorithm_call == 3: 
-        print('calls A* euclidean')
-        
         initial_config = [a1,a2,a3,b1,b2,b3,c1,c2,c3]
-        for i in range(9):
-            print(initial_config[i])
+        
         #initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5] # creates the puzzle
         problem = Problem(initial=initial_config)  # Create a problem instance.
         result = PuzzleState.a_star(problem)  # Solve the problem using A* search.
