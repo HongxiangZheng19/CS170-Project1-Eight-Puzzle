@@ -87,15 +87,40 @@ class PuzzleState:
 
 # Example usage:
 
-initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5] # creates the puzzle
-problem = Problem(initial=initial_config)  # Create a problem instance.
-result = PuzzleState.a_star(problem)  # Solve the problem using A* search.
-steps = []
-while result:
-    steps.append(result.configuration)
-    result = result.parent     
-steps.reverse()
+print("Welcome to XXX (change this to your student ID) 8 puzzle solver.")
+x = int(input('Type “1” to use a default puzzle, or “2” to enter your own puzzle.\n'))
+if x == 1: 
+    print('sds')
+elif x == 2:
+    print('Enter your puzzle, use a zero to represent the blank')
+    a1,a2,a3 = input('Enter the first row, use space or tabs between numbers ').split()
+    b1,b2,b3 = input('Enter the second row, use space or tabs between numbers ').split()
+    c1,c2,c3 = input('Enter the third row, use space or tabs between numbers ').split()
+    print('Enter your choice of algorithm')
+    print('Uniform Cost Search')
+    print('A* with the Misplaced Tile heuristic.')
+    print('A* with the Euclidean distance heuristic.')
+    algorithm_call = int(input())
+    if algorithm_call == 1: 
+        print('calls UCS')
+    elif algorithm_call == 2:
+        print('calls A* misplaced')
+    elif algorithm_call == 3: 
+        print('calls A* euclidean')
 
-for step in steps:
-    print(step)
+    #[a1,a2,a3]
+    #[b1,b2,b3]
+    #[c1,c2,c3]
+
+# initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5] # creates the puzzle
+# problem = Problem(initial=initial_config)  # Create a problem instance.
+# result = PuzzleState.a_star(problem)  # Solve the problem using A* search.
+# steps = []
+# while result:
+#     steps.append(result.configuration)
+#     result = result.parent     
+# steps.reverse()
+
+# for step in steps:
+#     print(step)
     
