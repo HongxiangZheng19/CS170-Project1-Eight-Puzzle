@@ -63,3 +63,35 @@ class PuzzleState:
   # Comparator for priority queue to sort states by their total score.
   def __lt__(self, other):
     return self.score
+
+def a_star(problem):
+    
+        initial_state = PuzzleState(problem.initial_state, problem)
+        open_list = []  # Priority queue for states to be explored.
+        heapq.heappush(open_list, initial_state)
+        visited = set()  # Set to track visited configurations to prevent re-exploration.
+        visited.add(tuple(problem.initial_state))
+    
+        while open_list:
+            current_state = heapq.heappop(open_list)  # Pop the state with the lowest f(n) score.
+            if current_state.is_goal():
+                return current_state  # Return the solution path if the goal state is reached.
+            for child in current_state.generate_children():  # Explore all child states.
+                child_config_tuple = tuple(child.configuration)
+                if child_config_tuple not in visited:
+                    visited.add(child_config_tuple)
+                    heapq.heappush(open_list, child)
+        return None  # Return None if no solution is found.
+
+    # Example usage:
+    initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5]
+    problem = Problem(initial=initial_config)  # Create a problem instance.
+    result = a_star(problem)  # Solve the problem using A* search.
+    steps = []
+    while result:
+        steps.append(result.configuration)
+        result = result.parent
+    steps.reverse()
+
+for step in steps:
+        print(step)
