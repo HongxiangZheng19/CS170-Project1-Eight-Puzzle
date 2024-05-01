@@ -93,9 +93,9 @@ if x == 1:
     print('sds')
 elif x == 2:
     print('Enter your puzzle, use a zero to represent the blank')
-    a1,a2,a3 = input('Enter the first row, use space or tabs between numbers ').split()
-    b1,b2,b3 = input('Enter the second row, use space or tabs between numbers ').split()
-    c1,c2,c3 = input('Enter the third row, use space or tabs between numbers ').split()
+    a1,a2,a3 = map(int, input('Enter the first row, use space or tabs between numbers ').split())
+    b1,b2,b3 = map(int,input('Enter the second row, use space or tabs between numbers ').split())
+    c1,c2,c3 = map(int,input('Enter the third row, use space or tabs between numbers ').split())
     print('Enter your choice of algorithm')
     print('Uniform Cost Search')
     print('A* with the Misplaced Tile heuristic.')
@@ -108,9 +108,10 @@ elif x == 2:
     elif algorithm_call == 3: 
         print('calls A* euclidean')
         
-    
-        #initial_config = [a1,a2,a3,b1,b2,b3,c1,c2,c3]
-        initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5] # creates the puzzle
+        initial_config = [a1,a2,a3,b1,b2,b3,c1,c2,c3]
+        for i in range(9):
+            print(initial_config[i])
+        #initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5] # creates the puzzle
         problem = Problem(initial=initial_config)  # Create a problem instance.
         result = PuzzleState.a_star(problem)  # Solve the problem using A* search.
         steps = []
