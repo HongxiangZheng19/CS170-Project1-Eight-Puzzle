@@ -95,7 +95,7 @@ class PuzzleState:
 print("Welcome to XXX (change this to your student ID) 8 puzzle solver.")
 x = int(input('Type “1” to use a default puzzle, or “2” to enter your own puzzle.\n'))
 if x == 1: 
-    print('Default puzzle')
+    print('Default puzzle\n')
     initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5] # creates the puzzle causes bug in this function
 
 elif x == 2:
