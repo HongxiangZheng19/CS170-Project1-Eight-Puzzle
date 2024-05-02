@@ -83,6 +83,11 @@ class PuzzleState:
                     visited.add(child_config_tuple)
                     heapq.heappush(open_list, child)
         return None  # Return None if no solution is found.
+    
+    def costhn(self):
+        return self.cost
+
+    
 
 
 # Example usage:
@@ -90,35 +95,54 @@ class PuzzleState:
 print("Welcome to XXX (change this to your student ID) 8 puzzle solver.")
 x = int(input('Type “1” to use a default puzzle, or “2” to enter your own puzzle.\n'))
 if x == 1: 
-    print('Puzzle generating')
+    print('Default puzzle')
+    initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5] # creates the puzzle causes bug in this function
+
 elif x == 2:
     print('Enter your puzzle, use a zero to represent the blank')
     a1,a2,a3 = map(int, input('Enter the first row, use space or tabs between numbers ').split())
     b1,b2,b3 = map(int,input('Enter the second row, use space or tabs between numbers ').split())
     c1,c2,c3 = map(int,input('Enter the third row, use space or tabs between numbers ').split())
-    print('Enter your choice of algorithm')
-    print('Uniform Cost Search')
-    print('A* with the Misplaced Tile heuristic.')
-    print('A* with the Euclidean distance heuristic.')
-    algorithm_call = int(input())
-    if algorithm_call == 1: 
-        print('calls UCS')
-    elif algorithm_call == 2:
-        print('calls A* misplaced')
-    elif algorithm_call == 3: 
-        initial_config = [a1,a2,a3,b1,b2,b3,c1,c2,c3]
-        
-        #initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5] # creates the puzzle
-        problem = Problem(initial=initial_config)  # Create a problem instance.
-        result = PuzzleState.a_star(problem)  # Solve the problem using A* search.
-        steps = []
-        while result:
-            steps.append(result.configuration)
-            result = result.parent     
-        steps.reverse()
+    print('\n')
+    initial_config = [a1,a2,a3,b1,b2,b3,c1,c2,c3]
+    
+print('Enter your choice of algorithm')
+print('Uniform Cost Search')
+print('A* with the Misplaced Tile heuristic.')
+print('A* with the Euclidean distance heuristic.')
 
-        for step in steps:
-            print(step)
+algorithm_call = int(input())
+
+if algorithm_call == 1: 
+    print('calls UCS')
+
+elif algorithm_call == 2:
+    print('calls A* misplaced')
+
+elif algorithm_call == 3: 
+
+    problem = Problem(initial=initial_config)  # Create a problem instance.
+    result = PuzzleState.a_star(problem)  # Solve the problem using A* search.
+    steps = []
+
+    if result == None: #when the result of the A star program is none, means that a solution was not found. Concluding that the puzzle is impossible to solve
+        print('No solution, Impossible puzzle')
+        exit(1)
+        
+    while result:
+        steps.append(result.configuration)
+        result = result.parent     
+    steps.reverse()
+    print('Expanding state')
+    g_n = 0
+    for step in steps: 
+        print('The best state to expand with g(n) =',g_n, 'and h(n) = ',)
+        print(step[0],step[1],step[2])
+        print(step[3],step[4],step[5])
+        print(step[6],step[7],step[8], 'Expanding this node..')
+        g_n+=1
+        print('\n')
+            #print(step)
 
     #[a1,a2,a3]
     #[b1,b2,b3]
