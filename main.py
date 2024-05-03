@@ -87,10 +87,6 @@ class PuzzleState:
     
 
 
- 
-
-    
-
 
 # Example usage:
 
