@@ -72,6 +72,7 @@ class PuzzleState:
         heapq.heappush(open_list, initial_state)
         visited = set()  # Set to track visited configurations to prevent re-exploration.
         visited.add(tuple(problem.initial_state))
+        
     
         while open_list:
             current_state = heapq.heappop(open_list)  # Pop the state with the lowest f(n) score.
@@ -84,8 +85,9 @@ class PuzzleState:
                     heapq.heappush(open_list, child)
         return None  # Return None if no solution is found.
     
-    def costhn(self):
-        return self.cost
+
+
+ 
 
     
 
@@ -128,13 +130,14 @@ elif algorithm_call == 3:
     if result == None: #when the result of the A star program is none, means that a solution was not found. Concluding that the puzzle is impossible to solve
         print('No solution, Impossible puzzle')
         exit(1)
-        
+
     while result:
         steps.append(result.configuration)
         result = result.parent     
     steps.reverse()
     print('Expanding state')
     g_n = 0
+    
     for step in steps: 
         print('The best state to expand with g(n) =',g_n, 'and h(n) = ',)
         print(step[0],step[1],step[2])
@@ -142,8 +145,11 @@ elif algorithm_call == 3:
         print(step[6],step[7],step[8], 'Expanding this node..')
         g_n+=1
         print('\n')
-            #print(step)
-
+    
+    print('Goal!!!')
+    print('To solve this problem the search algorithm expanded a total of XXX nodes.')
+    print('The maximum number of nodes in the queue at any one time: YYY.')
+    print('The depth of the goal node was ZZZ.')
     #[a1,a2,a3]
     #[b1,b2,b3]
     #[c1,c2,c3]
