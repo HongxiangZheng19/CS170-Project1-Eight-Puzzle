@@ -47,7 +47,29 @@ Approach 2:
 
 We will be using the A* with the Misplaced Tile heuristic method.
 
-1) 
+1) A* with Misplaced Tile Heuristic Overview
+
+- A* algorithm is a search algorithm used to find the shortest path from start node to a target node
+
+2)  Cost Function
+
+- g(n): Cost from start state to current state
+- h(n): The heuristic that estimates the lowest required amount of moves to reach the goal.
+      - h(n): Count the number of misplaced tiles from the initial state against the goal state
+- f(n) = g(n) + h(n): The cost function that A* minimizes. IT represents the estimated total cost of the cheapest solution through n.
+- 
+3) Algorithm
+  
+- Initialize the open list (priority queue) with the initial state of the puzzle.
+- Loop until the open list is empty:
+    - Remove the node with the lowest f(n) from the open list.
+    - Generate all its successors by moving the blank space up, down, left, or right
+    - For each successor:
+        - Compute g, h, and f (cost functions)
+        - If it is the goal, stop and return the solution by tracing the path back to the initial state.
+        - If a node with the same position as successor is in the open list with lower f, skip this successor.
+        - Otherwise, add the successor to the open list.
+- Return Fail if no solution is found after the open list is empty.
 
 
 Approach 3: 
