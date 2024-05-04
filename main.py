@@ -1,16 +1,6 @@
 import heapq  # Importing heapq for priority queue support.
 import math
 
-# Funcion for user interface to catch invalid inputs
-def get_valid_input(prompt, expected_length):
-    while True:
-        try:
-            user_input = list(map(int, input(prompt).split()))
-            if len(user_input) != expected_length or any(i < 0 or i > 8 for i in user_input):
-                raise ValueError("Invalid tile numbers or count.")
-            return user_input
-        except ValueError as e:
-            print(f"Invalid input: {e}. Please try again.")
 
 class Problem:
     # Initialize the problem with the initial state and an optional goal state.
@@ -46,7 +36,11 @@ class PuzzleState:
     
     # h(n) calculates the number of tiles in the wrong position in the puzzle configuration
     def misplaced_tile_heuristic(self):
-        return sum(1 for i in range(9) if self.configuration[i] != 0 and self.configuration[i] != self.problem.goal_state[i])
+        misplaced_tiles = 0
+        for i in range(9):
+            if self.configuration[i] != 0 and self.configuration[i] != self.problem.goal_state[i]:
+                misplaced_tiles += 1
+        return misplaced_tiles
     
     def expand_nodes(self):
         frontier = [] # Setup frontier
@@ -54,12 +48,6 @@ class PuzzleState:
     # Check if the current configuration matches the goal configuration.
     def is_goal(self):
         return self.configuration == self.problem.goal_state
-    
-    # Comparator for priority queue to sort states by their cost
-        # Compare the objects stored in the heap (determine the order/priority)
-        # Maintains the correct order based on the "cost" 
-    def __lt__(self, other):
-        return self.cost < other.cost
     
     # Generate all valid child states by moving the blank tile according to the defined operators
         # This function is only responsible for generating all possible children state
@@ -98,29 +86,8 @@ class PuzzleState:
     
 
 def misplace_search(problem):
-    initial_state = PuzzleState(problem.initial_state, problem)
-    open_list = []
-    heapq.heappush(open_list, initial_state)
-    visited_costs = {tuple(problem.initial_state): initial_state.cost}
-
-    # count the maximum size of the heap
-    max_heap_size = len(open_list)
-
-    while open_list:
-        current_state = heapq.heappop(open_list)
-        if current_state.is_goal():
-            return current_state, max_heap_size
-
-        for child in current_state.generate_children():
-            child_config_tuple = tuple(child.configuration)
-            if (child_config_tuple not in visited_costs or child.cost < visited_costs[child_config_tuple]):
-                visited_costs[child_config_tuple] = child.cost
-                heapq.heappush(open_list, child)
-                # Update the max heap size
-                if len(open_list) > max_heap_size:
-                    max_heap_size = len(open_list)  
-
-    return None, max_heap_size 
+    # to be done 
+    return None
 
 
 # User Interface
