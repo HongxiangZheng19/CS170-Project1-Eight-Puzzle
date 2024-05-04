@@ -75,7 +75,8 @@ class PuzzleState:
                     visited.add(child_config_tuple)
                     heapq.heappush(open_list, child)
         return None  # Return None if no solution is found.
-        
+
+    # Compare f(n) within the heapq, take the lowest f(n)
     def __lt__(self,other):
         self.score < other.score
 
