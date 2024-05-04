@@ -44,12 +44,9 @@ class PuzzleState:
         # Return index of blank tile
         return self.configuration.index(0)
     
+    # h(n) calculates the number of tiles in the wrong position in the puzzle configuration
     def misplaced_tile_heuristic(self):
-        misplaced_tiles = 0
-        for i in range(9):
-            if self.configuration[i] != 0 and self.configuration[i] != self.problem.goal_state[i]:
-                misplaced_tiles += 1
-        return misplaced_tiles
+        return sum(1 for i in range(9) if self.configuration[i] != 0 and self.configuration[i] != self.problem.goal_state[i])
     
     def expand_nodes(self):
         frontier = [] # Setup frontier
@@ -57,6 +54,12 @@ class PuzzleState:
     # Check if the current configuration matches the goal configuration.
     def is_goal(self):
         return self.configuration == self.problem.goal_state
+    
+    # Comparator for priority queue to sort states by their cost
+        # Compare the objects stored in the heap (determine the order/priority)
+        # Maintains the correct order based on the "cost" 
+    def __lt__(self, other):
+        return self.cost < other.cost
     
     # Generate all valid child states by moving the blank tile according to the defined operators
         # This function is only responsible for generating all possible children state
@@ -95,8 +98,29 @@ class PuzzleState:
     
 
 def misplace_search(problem):
-    # to be done 
-    return None
+    initial_state = PuzzleState(problem.initial_state, problem)
+    open_list = []
+    heapq.heappush(open_list, initial_state)
+    visited_costs = {tuple(problem.initial_state): initial_state.cost}
+
+    # count the maximum size of the heap
+    max_heap_size = len(open_list)
+
+    while open_list:
+        current_state = heapq.heappop(open_list)
+        if current_state.is_goal():
+            return current_state, max_heap_size
+
+        for child in current_state.generate_children():
+            child_config_tuple = tuple(child.configuration)
+            if (child_config_tuple not in visited_costs or child.cost < visited_costs[child_config_tuple]):
+                visited_costs[child_config_tuple] = child.cost
+                heapq.heappush(open_list, child)
+                # Update the max heap size
+                if len(open_list) > max_heap_size:
+                    max_heap_size = len(open_list)  
+
+    return None, max_heap_size 
 
 
 # User Interface
@@ -130,7 +154,7 @@ result = None
 if algorithm_call == 1:
     print('UCS not implemented yet')
 elif algorithm_call == 2:
-    result = misplace_search(problem)
+    result, max_heap_size = misplace_search(problem)
 elif algorithm_call == 3:
     print('A* Euclidean not implemented yet')
 else:
@@ -145,5 +169,7 @@ if result:
     print("Solution path:")
     for step in steps:
         print(step)
+    print(f"Maximum heap size during the search was: {max_heap_size}")
 else:
     print("No solution found.")
+    print(f"Maximum heap size during the search was: {max_heap_size}")
