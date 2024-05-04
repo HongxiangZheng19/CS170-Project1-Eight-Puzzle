@@ -42,12 +42,39 @@ class PuzzleState:
                 misplaced_tile_count += 1
         return misplaced_tile_count
     
-    def expand_nodes(self):
-        frontier = [] # Setup frontier
-        
+    def generate_children(self):
+        children = []
+        blank_pos = self.find_blank
+        y, x = divmod(blank_pos, 3) # locate the blank, turn it into x, y coords 
+        for dx,dy in self.problem.operator: # Check blank tile's up/down/left/right
+            nx, ny = x + dx, y + dy #  create x,y coords of all possible moves
+            blank_after_swap = nx * 3 + ny # new position of blank tile after moves are initiated
+            new_config = self.configuration # copy parent config
+            new_config[blank_pos], new_config[blank_after_swap] = new_config[blank_after_swap], new_config[blank_pos]
+            children.append(PuzzleState(self, new_config, new_config.problem, parent = self.configuration, move = blank_after_swap, cost = self.cost + 1))
+        return children
      
     # Check if the current configuration matches the goal configuration.
     def is_goal(self):
         return self.configuration == self.problem.goal_state
     
-
+    def a_star(problem):
+        initial_state = PuzzleState(problem.initial_state, problem)
+        open_list = []  # Priority queue for states to be explored.
+        heapq.heappush(open_list, initial_state)
+        visited = set()  # Set to track visited configurations to prevent re-exploration.
+        visited.add(tuple(problem.initial_state))
+    
+        while open_list:
+            current_state = heapq.heappop(open_list)  # Pop the state with the lowest f(n) score.
+            if current_state.is_goal():
+                return current_state  # Return the solution path if the goal state is reached.
+            for child in current_state.generate_children():  # Explore all child states.
+                child_config_tuple = tuple(child.configuration) # Makes sure no states are repeated
+                if child_config_tuple not in visited:
+                    visited.add(child_config_tuple)
+                    heapq.heappush(open_list, child)
+        return None  # Return None if no solution is found.
+        
+    def __lt__(self,other):
+        self.score < other.score
