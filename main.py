@@ -1,16 +1,6 @@
 import heapq  # Importing heapq for priority queue support.
 import math
 
-# Funcion for user interface to catch invalid inputs
-def get_valid_input(prompt, expected_length):
-    while True:
-        try:
-            user_input = list(map(int, input(prompt).split()))
-            if len(user_input) != expected_length or any(i < 0 or i > 8 for i in user_input):
-                raise ValueError("Invalid tile numbers or count.")
-            return user_input
-        except ValueError as e:
-            print(f"Invalid input: {e}. Please try again.")
 
 class Problem:
     # Initialize the problem with the initial state and an optional goal state.
@@ -45,59 +35,49 @@ class PuzzleState:
         return self.configuration.index(0)
     
     def misplaced_tile_heuristic(self):
-        misplaced_tiles = 0
+        misplaced_tile_count = 0
+        # Loop through initial state, count number of misplaced tiles against goal state
         for i in range(9):
-            if self.configuration[i] != 0 and self.configuration[i] != self.problem.goal_state[i]:
-                misplaced_tiles += 1
-        return misplaced_tiles
+            if (self.configuration[i] != 0) and (self.configuration[i] != self.problem.goal_state[i]):
+                misplaced_tile_count += 1
+        return misplaced_tile_count
     
-    def expand_nodes(self):
-        frontier = [] # Setup frontier
-        
+    def generate_children(self):
+        children = []
+        x, y = divmod(self.blank_pos, 3) # locate the blank, turn it into x, y coords 
+        for dx,dy in self.problem.operators: # Check blank tile's up/down/left/right
+            nx, ny = x + dx, y + dy #  create x,y coords of all possible moves
+            if 0 <= nx < 3 and 0 <= ny < 3: # makes sure new coords are within bound of 3x3 grid
+                blank_after_swap = nx * 3 + ny # new position of blank tile after moves are initiated
+                new_config = self.configuration[:] # copy parent config
+                new_config[self.blank_pos], new_config[blank_after_swap] = new_config[blank_after_swap], new_config[self.blank_pos]
+                children.append(PuzzleState(new_config, self.problem, self, new_config, self.cost + 1))
+        return children
+     
     # Check if the current configuration matches the goal configuration.
     def is_goal(self):
         return self.configuration == self.problem.goal_state
     
-    # Generate all valid child states by moving the blank tile according to the defined operators
-        # This function is only responsible for generating all possible children state
-    def generate_children(self):
-        # hold all the child states generated
-        children = []
-
-        # attempts to find the position of the blank tile
-            # For example, if self.blank_pos is 5, divmod(5, 3) will return (1, 2) -> the blank will be at (row 1, column 2)
-        x, y = divmod(self.blank_pos, 3)
-        
-        # iterates through the possible movements (up, down, left, right)
-        for dx, dy in self.problem.operators:
-            # calculates the new position (nx, ny) of the blank tile after moving it in the direction (dx, dy)
-            nx, ny = x + dx, y + dy
-
-            # make sure that the tile would not go out of bound (3 x 3 grid)
-            if 0 <= nx < 3 and 0 <= ny < 3:
-                # translates the 2D grid coordinates back into a 1D index (list of length 9)
-                new_pos = nx * 3 + ny
-                # creates a copy of the current configuration 
-                    # avoids modifying the original configuration
-                new_config = self.configuration[:]
-                # swaps the blank tile with the tile at the new position
-                new_config[self.blank_pos], new_config[new_pos] = new_config[new_pos], new_config[self.blank_pos]
-                # creates a new PuzzleState object for the child state
-                    # It passes the parameter of:
-                        # new configuration
-                        # problem instance
-                        # current state as the parent
-                        # new position of the blank tile
-                        # updated cost (incremented by 1 since each move has a cost of 1)
-                children.append(PuzzleState(new_config, self.problem, self, new_pos, self.cost + 1))
-        # returns the list of all valid child states generated
-        return children
+    def a_star(problem):
+        initial_state = PuzzleState(problem.initial_state, problem)
+        open_list = []  # Priority queue for states to be explored.
+        heapq.heappush(open_list, initial_state)
+        visited = set()  # Set to track visited configurations to prevent re-exploration.
+        visited.add(tuple(problem.initial_state))
     
-
-def misplace_search(problem):
-    # to be done 
-    return None
-
+        while open_list:
+            current_state = heapq.heappop(open_list)  # Pop the state with the lowest f(n) score.
+            if current_state.is_goal():
+                return current_state  # Return the solution path if the goal state is reached.
+            for child in current_state.generate_children():  # Explore all child states.
+                child_config_tuple = tuple(child.configuration) # Makes sure no states are repeated
+                if child_config_tuple not in visited:
+                    visited.add(child_config_tuple)
+                    heapq.heappush(open_list, child)
+        return None  # Return None if no solution is found.
+        
+    def __lt__(self,other):
+        self.score < other.score
 
 # User Interface
 
