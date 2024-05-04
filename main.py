@@ -32,7 +32,7 @@ class Problem:
 
 class PuzzleState:
 
-    # Initialize the puzzle state within the context of a problem
+    # Initialize the puzzle state
     def __init__(self, configuration, problem, parent=None, move=None, cost=0):
 
         self.configuration = configuration # current tile configuration
@@ -109,12 +109,16 @@ def uniform_cost_search(problem):
         heapq.heappush(open_list, initial_state)
 
         # visited_cost is used to keep track of the lowest cost to each state
-        visited_costs = {tuple(problem.initial_state): 0}
+        visited_costs = {tuple(problem.initial_state): initial_state.cost}
 
+        # count the maximum size of the heap
+        max_heap_size = len(open_list)
+
+        # Not needed
         # set to track visited configurations to prevent revisiting
-        visited = set() 
+        # visited = set() 
         # initial state is "visited", therefore it is added to the set
-        visited.add(tuple(problem.initial_state))
+        # visited.add(tuple(problem.initial_state))
 
         # loop until the open list is empty
         while open_list:
@@ -125,7 +129,7 @@ def uniform_cost_search(problem):
             if current_state.is_goal():
                 print("Goal state reached!")
                 # return the solution path if the goal state is reached
-                return current_state  
+                return current_state, max_heap_size
             
             # explore all child states
                 # using the "generate_children" function to find all valid moves from the current state
@@ -137,14 +141,17 @@ def uniform_cost_search(problem):
                 # checks if the current path to it is cheaper than a previously recorded path
                     # !!! allows revisiting of states if a cheaper path is found
                 if child_config_tuple not in visited_costs or child.cost < visited_costs[child_config_tuple]:
-                    # if not visited before, it is added to both the visited set and the open_list priority queue
-                    visited.add(child_config_tuple)
+                    # checks the visited_costs for the presence of a configuration and compares costs directly in the dictionary
+                    visited_costs[child_config_tuple] = child.cost
                     # adding the child to open list managed by a heap
                         # the queue will then determine the order of state (by cost)
                     heapq.heappush(open_list, child)
+                    # Update max_heap_size if the current size of the heap is greater than any previously recorded size
+                    if len(open_list) > max_heap_size:
+                        max_heap_size = len(open_list)
         # Note: the child is ignored if it has already been visited before with a cost that is not cheaper than the previously recorded cost
         # return None if no solution is found
-        return None  
+        return None, max_heap_size 
 
 # User Interface
 
@@ -175,7 +182,7 @@ algorithm_call = int(input('Choose your option (1, 2, or 3): '))
 problem = Problem(initial=initial_config)
 result = None
 if algorithm_call == 1:
-    result = uniform_cost_search(problem)
+    result, max_heap_size = uniform_cost_search(problem)
 elif algorithm_call == 2:
     print('A* misplaced not implemented yet')
 elif algorithm_call == 3:
@@ -192,8 +199,10 @@ if result:
     print("Solution path:")
     for step in steps:
         print(step)
+    print(f"Maximum heap size during the search was: {max_heap_size}")
 else:
     print("No solution found.")
+    print(f"Maximum heap size during the search was: {max_heap_size}")
 
 '''
 elif algorithm_call == 2:

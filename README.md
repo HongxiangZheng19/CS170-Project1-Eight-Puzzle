@@ -40,7 +40,8 @@ We will be using the Uniform Cost Search method.
 4) Optimization 
 
 - Cycle Checking: Keep a closed list of expanded nodes to avoid revisiting the same state. 
-    - We can add each explored node to a list and check this list each time we want to add a node to the open list.
+    - With Visited_Cost function we can also store the minimum cost at which this state has been reached.
+    - By maintaining the least cost at which each state has been visited, the algorithm can skip expanding states if they are reached through more expensive paths than previously recorded.
 - Path Reconstruction: Maintain a parent link in each node to trace back the solution path once the goal state is found.
 
 Approach 2: 
