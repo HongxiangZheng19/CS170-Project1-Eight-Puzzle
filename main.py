@@ -44,14 +44,14 @@ class PuzzleState:
     
     def generate_children(self):
         children = []
-        blank_pos = self.find_blank
-        y, x = divmod(blank_pos, 3) # locate the blank, turn it into x, y coords 
-        for dx,dy in self.problem.operator: # Check blank tile's up/down/left/right
+        x, y = divmod(self.blank_pos, 3) # locate the blank, turn it into x, y coords 
+        for dx,dy in self.problem.operators: # Check blank tile's up/down/left/right
             nx, ny = x + dx, y + dy #  create x,y coords of all possible moves
-            blank_after_swap = nx * 3 + ny # new position of blank tile after moves are initiated
-            new_config = self.configuration # copy parent config
-            new_config[blank_pos], new_config[blank_after_swap] = new_config[blank_after_swap], new_config[blank_pos]
-            children.append(PuzzleState(self, new_config, new_config.problem, parent = self.configuration, move = blank_after_swap, cost = self.cost + 1))
+            if 0 <= nx < 3 and 0 <= ny < 3: # makes sure new coords are within bound of 3x3 grid
+                blank_after_swap = nx * 3 + ny # new position of blank tile after moves are initiated
+                new_config = self.configuration[:] # copy parent config
+                new_config[self.blank_pos], new_config[blank_after_swap] = new_config[blank_after_swap], new_config[self.blank_pos]
+                children.append(PuzzleState(new_config, self.problem, self, new_config, self.cost + 1))
         return children
      
     # Check if the current configuration matches the goal configuration.
@@ -78,3 +78,4 @@ class PuzzleState:
         
     def __lt__(self,other):
         self.score < other.score
+
