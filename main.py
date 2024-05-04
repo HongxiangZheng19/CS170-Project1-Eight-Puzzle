@@ -1,5 +1,16 @@
 import heapq # Importing heapq for priority queue support.
-import math  
+import math
+
+# Funcion for user interface to catch invalid inputs
+def get_valid_input(prompt, expected_length):
+    while True:
+        try:
+            user_input = list(map(int, input(prompt).split()))
+            if len(user_input) != expected_length or any(i < 0 or i > 8 for i in user_input):
+                raise ValueError("Invalid tile numbers or count.")
+            return user_input
+        except ValueError as e:
+            print(f"Invalid input: {e}. Please try again.")
 
 class Problem:
   # Initialize the problem with the initial state and an optional goal state.
@@ -11,7 +22,7 @@ class Problem:
     # Default goal state.
     self.goal_state = goal if goal else [1, 2, 3, 4, 5, 6, 7, 8, 0] 
 
-     # Possible moves: up, down, left, right.
+    # Possible moves: up, down, left, right.
     self.operators = [(-1, 0), (1, 0), (0, -1), (0, 1)] 
 
 
@@ -42,7 +53,7 @@ class PuzzleState:
         goal_x, goal_y = divmod(self.problem.goal_state.index(self.configuration[i]), 3)
         distance += math.sqrt((x - goal_x) ** 2 + (y - goal_y) ** 2)
     return distance
-   
+
   # Generate all valid child states by moving the blank tile according to the defined operators.
   def generate_children(self):
     children = []
@@ -55,7 +66,7 @@ class PuzzleState:
         new_config[self.blank_pos], new_config[new_pos] = new_config[new_pos], new_config[self.blank_pos]
         children.append(PuzzleState(new_config, self.problem, self, new_pos, self.cost + 1))
     return children
-   
+
   # Check if the current configuration matches the goal configuration.
   def is_goal(self):
     return self.configuration == self.problem.goal_state
@@ -83,14 +94,51 @@ def a_star(problem):
                     heapq.heappush(open_list, child)
         return None  # Return None if no solution is found.
 
-    # Example usage:
-        initial_config = [2, 8, 3, 1, 6, 4, 7, 0, 5]  # Fix the indentation of the closing bracket
-        problem = Problem(initial=initial_config)  # Create a problem instance.
-        result = a_star(problem)  # Solve the problem using A* search.
-        steps = []
-        while result:
-           steps.append(result.configuration)
-           result = result.parent
-           steps.reverse()
-        for step in steps:
-            print(step)
+# User Interface
+
+print("Welcome to XXX (change this to your student ID) 8 puzzle solver.")
+x = int(input('Type “1” to use a default puzzle, or “2” to enter your own puzzle.\n'))
+if x == 1: 
+    print('Default puzzle\n')
+    initial_config = [1, 2, 3, 4, 5, 6, 7, 8, 0] 
+
+elif x == 2:
+    print('Enter your puzzle, use a zero to represent the blank')
+    a1, a2, a3 = get_valid_input('Enter the first row, use space or tabs between numbers ', 3)
+    b1, b2, b3 = get_valid_input('Enter the second row, use space or tabs between numbers ', 3)
+    c1, c2, c3 = get_valid_input('Enter the third row, use space or tabs between numbers ', 3)
+    print('\n')
+    initial_config = [a1, a2, a3, b1, b2, b3, c1, c2, c3]
+else:
+    print("Invalid puzzle choice.")
+    exit()
+
+print('Enter your choice of algorithm')
+print('Uniform Cost Search')
+print('A* with the Misplaced Tile heuristic.')
+print('A* with the Euclidean distance heuristic.')
+
+algorithm_call = int(input('Choose your option (1, 2, or 3): '))
+
+problem = Problem(initial=initial_config)
+result = None
+if algorithm_call == 1:
+    print('UCF not implemented yet')
+elif algorithm_call == 2:
+    print('Misplaced not implemented yet')
+elif algorithm_call == 3:
+    result = a_star(problem)
+else:
+    print("Invalid algorithm choice.")
+
+if result:
+    steps = []
+    while result:
+        steps.append(result.configuration)
+        result = result.parent
+    steps.reverse()
+    print("Solution path:")
+    for step in steps:
+        print(step)
+else:
+    print("No solution found.")
