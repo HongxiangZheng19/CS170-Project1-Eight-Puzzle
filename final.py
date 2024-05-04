@@ -40,7 +40,7 @@ class Problem:
 class PuzzleState:
 
     # Initialize the puzzle state
-    def __init__(self, configuration, problem, parent=None, move=None, cost=0):
+    def __init__(self, configuration, problem, parent=None, move=None, cost=0,A_star =None):
 
         self.configuration = configuration # current tile configuration
         self.problem = problem # reference to the problem instance
@@ -48,12 +48,25 @@ class PuzzleState:
         self.move = move # the move made to reach this state from the parent
         self.cost = cost # the cost from the initial state to this state
         self.blank_pos = self.find_blank()# location of the blank tile
-        #self.heuristic = self.euclidean_distance()# compute the Euclidean distance heuristic
+        self.A_star = A_star
+        if A_star is True:
+            self.heuristic = self.euclidean_distance()# compute the Euclidean distance heuristic
+            #since heuristic is only use in the A* algorithm, it doesn't need it for UCS. when A_star becomes true when the a star function sets it to true
         self.score = self.cost  # Score is the cost for UCS
 
     # Find and return the index of the blank tile
     def find_blank(self):
         return self.configuration.index(0)
+    
+
+    def euclidean_distance(self):
+        distance = 0
+        for i in range(9):
+            if self.configuration[i] != 0:
+             x, y = divmod(i, 3)
+             goal_x, goal_y = divmod(self.problem.goal_state.index(self.configuration[i]), 3)
+             distance += math.sqrt((x - goal_x) ** 2 + (y - goal_y) ** 2)
+        return distance
 
     # Check if the current configuration matches the goal configuration
     def is_goal(self):
@@ -134,7 +147,7 @@ def uniform_cost_search(problem):
 
             # check if the current state is the goal state
             if current_state.is_goal():
-                print("Goal state reached!")
+                #print("Goal state reached!")
                 # return the solution path if the goal state is reached
                 return current_state, max_heap_size
             
@@ -159,6 +172,27 @@ def uniform_cost_search(problem):
         # Note: the child is ignored if it has already been visited before with a cost that is not cheaper than the previously recorded cost
         # return None if no solution is found
         return None, max_heap_size 
+
+#A star Search
+def a_star(problem):
+    
+        initial_state = PuzzleState(problem.initial_state, problem,A_star=True)
+        open_list = []  # Priority queue for states to be explored.
+        heapq.heappush(open_list, initial_state)
+        visited = set()  # Set to track visited configurations to prevent re-exploration.
+        visited.add(tuple(problem.initial_state))
+
+        while open_list:
+
+            current_state = heapq.heappop(open_list)  # Pop the state with the lowest f(n) score.
+            if current_state.is_goal():
+                return current_state  # Return the solution path if the goal state is reached.
+            for child in current_state.generate_children():  # Explore all child states.
+                child_config_tuple = tuple(child.configuration)
+                if child_config_tuple not in visited:
+                    visited.add(child_config_tuple)
+                    heapq.heappush(open_list, child)
+        return None  # Return None if no solution is found.
 
 # User Interface
 
@@ -193,7 +227,7 @@ if algorithm_call == 1:
 elif algorithm_call == 2:
     print('A* misplaced not implemented yet')
 elif algorithm_call == 3:
-    print('A* Euclidean not implemented yet')
+    result = a_star(problem)
 else:
     print("Invalid algorithm choice.")
 
@@ -205,7 +239,7 @@ if result:
     steps.reverse()
     print("Solution path:")
     for step in steps:
-        print(step)
+        #print(step)
         print(step[0],step[1],step[2])
         print(step[3],step[4],step[5])
         print(step[6],step[7],step[8],'\n')
