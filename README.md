@@ -37,12 +37,6 @@ We will be using the Uniform Cost Search method.
             - if not, add it to the queue.
 - Return Fail if no solution is found after the open list is empty.
 
-4) Optimization 
-
-- Cycle Checking: Keep a closed list of expanded nodes to avoid revisiting the same state. 
-    - We can add each explored node to a list and check this list each time we want to add a node to the open list.
-- Path Reconstruction: Maintain a parent link in each node to trace back the solution path once the goal state is found.
-
 Approach 2: 
 
 We will be using the A* with the Misplaced Tile heuristic method.
@@ -57,8 +51,14 @@ We will be using the A* with the Misplaced Tile heuristic method.
 - h(n): The heuristic that estimates the lowest required amount of moves to reach the goal.
       - h(n): Count the number of misplaced tiles from the initial state against the goal state
 - f(n) = g(n) + h(n): The cost function that A* minimizes. IT represents the estimated total cost of the cheapest solution through n.
-- 
-3) Algorithm
+
+3) Choosing the Heuristic [h(n)]
+
+- To compute the misplaced tile heuristic for puzzles like the 8-puzzle, count the number of tiles that are not in their goal position, excluding the blank tile. 
+    - This heuristic value represents the minimum number of tiles that need to be moved to reach the goal state
+    - It is used to estimate the distance from the current state to the solution in search algorithms.
+
+4) Algorithm
   
 - Initialize the open list (priority queue) with the initial state of the puzzle.
 - Loop until the open list is empty:
@@ -69,7 +69,7 @@ We will be using the A* with the Misplaced Tile heuristic method.
         - If it is the goal, stop and return the solution by tracing the path back to the initial state.
         - If a node with the same position as successor is in the open list with lower f, skip this successor.
         - Otherwise, add the successor to the open list.
-- Return Fail if no solution is found after the open list is empty.
+- Return None if no solution is found after the open list is empty.
 
 
 Approach 3: 
@@ -105,7 +105,26 @@ We will be using the A* with the Euclidean Distance heuristic method.
         - If it is the goal, stop and return the solution by tracing the path back to the initial state.
         - If a node with the same position as successor is in the open list with lower f, skip this successor.
         - Otherwise, add the successor to the open list.
-- Return Fail if no solution is found after the open list is empty.
+- Return None if no solution is found after the open list is empty.
+
+Optimization 
+
+- Keep a closed list of expanded nodes to avoid revisiting the same state. 
+    - We add each explored node to a list and check this list each time we want to add a node to the open list.
+    - Keep track of the costs of the states to prevent revisiting a state that was previously encountered with a higher cost.
+
+Conclusion
+
+In this project, we explored three different heuristic methods—Uniform Cost Search, Misplaced Tile, and Euclidean Distance to solve the 8-puzzle problem. Each method utilizes a different heuristic to estimate the cost from the current state to the goal state, with Uniform Cost Search considering only the cost without any heuristic. This approach allowed us to systematically compare the effectiveness and efficiency of each heuristic in guiding the A* search towards the solution. For relatively simple puzzles, the choice of heuristic shows minimal impact; however, as puzzles increase in complexity, the effectiveness of a heuristic becomes more pronounced, demonstrating that a good heuristic significantly enhances search efficiency compared to a weak or nonexistent heuristic.
+
+
+
+
+
+
+
+
+
 
 
 
