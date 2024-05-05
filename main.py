@@ -22,7 +22,10 @@ class Problem:
         # Default goal state.
         self.goal_state = goal if goal else [1, 2, 3, 4, 5, 6, 7, 8, 0]  
 
-         # Possible moves: up, down, left, right.
+        # Possible moves: up, down, left, right
+            # (x,y) where x = row and y = column
+            # x = 0 = first row, 1 = second row, 2 = third row
+            # y = 0 = first column, 1 = second column, 2 = third column
         self.operators = [(-1, 0), (1, 0), (0, -1), (0, 1)] 
 
 
