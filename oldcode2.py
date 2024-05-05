@@ -1,6 +1,8 @@
 import heapq  # Importing heapq for priority queue support.
 import math
 
+# This file have both Uniform and Misplace Function completed
+
 # Funcion for user interface to catch invalid inputs
 def get_valid_input(prompt, expected_length):
     while True:
@@ -29,40 +31,26 @@ class Problem:
 class PuzzleState:
 
     # Initialize the puzzle state within the context of a problem.
-    def __init__(self, configuration, problem, parent=None, move=None, cost=0, heuristic_type=None):
+    def __init__(self, configuration, problem, parent=None, move=None, cost=0, use_heuristic=False):
         
         self.configuration = configuration  # Current tile configuration.
         self.problem = problem  # Reference to the problem instance.
         self.parent = parent  # Reference to the parent state in the search path.
         self.move = move  # The move made to reach this state from the parent.
         self.cost = cost  # The cost from the initial state to this state.
+        self.use_heuristic = use_heuristic  # Store the use of heuristic for generating children.
         self.blank_pos = self.find_blank()  # Location of the blank tile.
-        self.heuristic_type = heuristic_type  # Store the use of heuristic for generating children.
-
-        if heuristic_type == 'misplaced':
-            self.heuristic = self.misplaced_tile_heuristic()
-        elif heuristic_type == 'euclidean':
-            self.heuristic = self.euclidean_distance_heuristic()    
+        if use_heuristic:
+            self.heuristic = self.misplaced_tile_heuristic()  # Calculate heuristic if needed.
+            self.score = self.cost + self.heuristic  # f(n) = g(n) + h(n) for A*
         else:
-            self.heuristic = 0  # Default to no heuristic if none specified
+            self.heuristic = 0
+            self.score = self.cost  # f(n) = g(n) + 0 for UCS
 
-        # f(n) = g(n) + h(n) for A*
-        # f(n) = g(n) + 0 for UCS
-        self.score = self.cost + self.heuristic 
 
     def find_blank(self): 
         # Return index of blank tile
         return self.configuration.index(0)
-    
-    # h(n): calculate the Euclidean distance for each tile from its current position to its goal position
-    def euclidean_distance_heuristic(self):
-        distance = 0
-        for i in range(9):
-            if self.configuration[i] != 0:
-                x, y = divmod(i, 3)
-                goal_x, goal_y = divmod(self.problem.goal_state.index(self.configuration[i]), 3)
-                distance += math.sqrt((x - goal_x) ** 2 + (y - goal_y) ** 2)
-        return distance
     
     # h(n): calculates the number of tiles in the wrong position in the puzzle configuration
     def misplaced_tile_heuristic(self):
@@ -117,7 +105,7 @@ class PuzzleState:
                         # current state as the parent
                         # new position of the blank tile
                         # updated cost (incremented by 1 since each move has a cost of 1)
-                child = PuzzleState(new_config, self.problem, self, new_pos, self.cost + 1, heuristic_type=self.heuristic_type)
+                child = PuzzleState(new_config, self.problem, self, new_pos, self.cost + 1, use_heuristic=self.use_heuristic)
                 children.append(child)
         # returns the list of all valid child states generated
         return children
@@ -129,7 +117,7 @@ class PuzzleState:
 def uniform_cost_search(problem):
         print("Starting Uniform Cost Search...")
         # create an initial "PuzzleState" object
-        initial_state = PuzzleState(problem.initial_state, problem, heuristic_type=None)
+        initial_state = PuzzleState(problem.initial_state, problem, use_heuristic=False)
         # priority queue for states to be explored
             # inserting and removing the state with lowest cost
         open_list = [] 
@@ -187,32 +175,7 @@ def uniform_cost_search(problem):
 # --------------------------
 def misplace_search(problem):
     print("Starting Misplace Tile Search...")
-    initial_state = PuzzleState(problem.initial_state, problem, heuristic_type='misplaced')
-    open_list = []
-    heapq.heappush(open_list, initial_state)
-    visited_costs = {tuple(problem.initial_state): initial_state.cost}
-    max_heap_size = len(open_list)
-
-    while open_list:
-        current_state = heapq.heappop(open_list)
-        if current_state.is_goal():
-            return current_state, max_heap_size
-
-        for child in current_state.generate_children():
-            child_config_tuple = tuple(child.configuration)
-            if (child_config_tuple not in visited_costs or child.cost < visited_costs[child_config_tuple]):
-                visited_costs[child_config_tuple] = child.cost
-                heapq.heappush(open_list, child)
-                if len(open_list) > max_heap_size:
-                    max_heap_size = len(open_list)
-
-    return None, max_heap_size 
-
-# EUCLIDEAN DISTANCE SEARCH
-# --------------------------
-def euclidean_search(problem):
-    print("Starting Euclidean Distance Search...")
-    initial_state = PuzzleState(problem.initial_state, problem, heuristic_type='euclidean')
+    initial_state = PuzzleState(problem.initial_state, problem, use_heuristic=True)
     open_list = []
     heapq.heappush(open_list, initial_state)
     visited_costs = {tuple(problem.initial_state): initial_state.cost}
@@ -239,7 +202,7 @@ print("Welcome to XXX (change this to your student ID) 8 puzzle solver.")
 x = int(input('Type “1” to use a default puzzle, or “2” to enter your own puzzle.\n'))
 if x == 1: 
     print('Default puzzle\n')
-    initial_config = [8, 7, 1, 6, 0, 2, 5, 4, 3] 
+    initial_config = [0, 1, 2, 4, 5, 3, 7, 8, 6] 
 
 elif x == 2:
     print('Enter your puzzle, use a zero to represent the blank')
@@ -266,7 +229,7 @@ if algorithm_call == 1:
 elif algorithm_call == 2:
     result, max_heap_size = misplace_search(problem)
 elif algorithm_call == 3:
-    result, max_heap_size = euclidean_search(problem)
+    print('A* Euclidean not implemented yet')
 else:
     print("Invalid algorithm choice.")
 
