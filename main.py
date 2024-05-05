@@ -189,7 +189,7 @@ def uniform_cost_search(problem):
                         max_heap_size = len(open_list)
         # Note: the child is ignored if it has already been visited before with a cost that is not cheaper than the previously recorded cost
         # return None if no solution is found
-        return None, max_heap_size 
+        return None, max_heap_size
 
 # MISPLACE SEARCH
 # --------------------------
