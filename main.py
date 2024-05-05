@@ -226,7 +226,7 @@ def misplace_search(problem):
                 if len(open_list) > max_heap_size:
                     max_heap_size = len(open_list)
 
-    return None, max_heap_size,0,0 
+    return None, max_heap_size,0,node_expanded 
 
 # EUCLIDEAN DISTANCE SEARCH
 # --------------------------
@@ -257,7 +257,7 @@ def euclidean_search(problem):
                 if len(open_list) > max_heap_size:
                     max_heap_size = len(open_list)
 
-    return None, max_heap_size,0,0
+    return None, max_heap_size,0,node_expanded
 
 # User Interface
 
@@ -313,3 +313,4 @@ if result:
 else:
     print("No solution found.")
     print(f"Maximum heap size during the search was: {max_heap_size}")
+    print(f"Number of nodes expanded: {node_expanded}")
