@@ -265,7 +265,7 @@ print("Welcome to XXX (change this to your student ID) 8 puzzle solver.")
 x = int(input('Type “1” to use a default puzzle, or “2” to enter your own puzzle.\n'))
 if x == 1: 
     print('Default puzzle\n')
-    initial_config = [1, 2, 3, 4, 5, 6, 8, 7, 0] 
+    initial_config = [1, 2, 3, 4, 5, 6, 7, 8, 0] 
 
 elif x == 2:
     print('Enter your puzzle, use a zero to represent the blank')
