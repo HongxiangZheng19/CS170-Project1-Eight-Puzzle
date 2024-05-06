@@ -171,7 +171,7 @@ def uniform_cost_search(problem):
             if current_state.is_goal():
                 print("Goal state reached!")
                 # return the solution path if the goal state is reached
-                return current_state, max_heap_size,current_state.cost,node_expanded # also returning the cost/depth
+                return current_state, max_heap_size,current_state.cost,node_expanded,current_state.score # also returning the cost/depth
             
             # explore all child states
                 # using the "generate_children" function to find all valid moves from the current state
@@ -195,7 +195,7 @@ def uniform_cost_search(problem):
                         max_heap_size = len(open_list)
         # Note: the child is ignored if it has already been visited before with a cost that is not cheaper than the previously recorded cost
         # return None if no solution is found
-        return None, max_heap_size,0,node_expanded
+        return None, max_heap_size,0,node_expanded,0
 
 # MISPLACE SEARCH
 # --------------------------
@@ -213,7 +213,7 @@ def misplace_search(problem):
     while open_list:
         current_state = heapq.heappop(open_list)
         if current_state.is_goal():
-            return current_state, max_heap_size,current_state.cost,node_expanded
+            return current_state, max_heap_size,current_state.cost,node_expanded,current_state.score
 
         # when is generating the children, we want to keep track of the expanded children through each iteration
         node_expanded+=1
@@ -226,7 +226,7 @@ def misplace_search(problem):
                 if len(open_list) > max_heap_size:
                     max_heap_size = len(open_list)
 
-    return None, max_heap_size,0,node_expanded 
+    return None, max_heap_size,0,node_expanded,0
 
 # EUCLIDEAN DISTANCE SEARCH
 # --------------------------
@@ -244,7 +244,7 @@ def euclidean_search(problem):
     while open_list:
         current_state = heapq.heappop(open_list)
         if current_state.is_goal():
-            return current_state, max_heap_size,current_state.cost,node_expanded
+            return current_state, max_heap_size,current_state.cost,node_expanded,current_state.score
 
         # when is generating the children, we want to keep track of the expanded children through each iteration
         node_expanded+=1
@@ -257,11 +257,11 @@ def euclidean_search(problem):
                 if len(open_list) > max_heap_size:
                     max_heap_size = len(open_list)
 
-    return None, max_heap_size,0,node_expanded
+    return None, max_heap_size,0,node_expanded,0
 
 # User Interface
 
-print("Welcome to XXX (change this to your student ID) 8 puzzle solver.")
+print("Welcome to 8 puzzle solver.",'programmed by: Armando, Michael, Gabriel S, Thien')
 x = int(input('Type “1” to use a default puzzle, or “2” to enter your own puzzle.\n'))
 if x == 1: 
     print('Default puzzle\n')
@@ -288,11 +288,11 @@ algorithm_call = int(input('Choose your option (1, 2, or 3): '))
 problem = Problem(initial=initial_config)
 result = None
 if algorithm_call == 1:
-    result, max_heap_size,depth,node_expanded = uniform_cost_search(problem)
+    result, max_heap_size,depth,node_expanded,f_n_cost = uniform_cost_search(problem)
 elif algorithm_call == 2:
-    result, max_heap_size,depth,node_expanded = misplace_search(problem) # depth = cost g(n) 
+    result, max_heap_size,depth,node_expanded,f_n_cost = misplace_search(problem) # depth = cost g(n) 
 elif algorithm_call == 3:
-    result, max_heap_size,depth,node_expanded = euclidean_search(problem)
+    result, max_heap_size,depth,node_expanded,f_n_cost = euclidean_search(problem)
 else:
     print("Invalid algorithm choice.")
 
@@ -307,8 +307,10 @@ if result:
         print(step[0],step[1],step[2])
         print(step[3],step[4],step[5])
         print(step[6],step[7],step[8],'\n')
-        
+   
     UI_Text(node_expanded,max_heap_size,depth)
+    print('\n')
+    print('cost f(n) =',f_n_cost,'\n')
     #print(f"Maximum heap size during the search was: {max_heap_size}")
 else:
     print("No solution found.")
